@@ -9,6 +9,7 @@ ENV PYTHONUNBUFFERED 1
 #copy our requirments.txt file from our local machine 
 #to /tmp/requirements.txt or in the other words to docker image
 COPY ./requirements.txt /tmp/requirements.txt
+COPY ./requirements.dev.txt /tmp/requirements.dev.txt
 #copy thea app directory that contains django app to /app in container
 COPY ./app /app
 #working directory from which commands will be run on our Docker image
@@ -16,6 +17,10 @@ WORKDIR /app
 #port exposed from container to our machine
 #this is a way to connect to the django development server
 EXPOSE 8000
+
+#bice overrajdovana u dockerfile-u na true
+#ali ovde je tsavljena ova linije na false da ne bi runovo u divelopmentu
+ARG DEV=false
 
 #runs command on alphine image
 #python -m venv /py && \                            - creates new virtual env that we are going to use to store our dependencies
@@ -29,6 +34,11 @@ EXPOSE 8000
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \ 
     /py/bin/pip install -r /tmp/requirements.txt && \
+    #shell command conditionally
+    if [$DEV = "true"]; \
+        #shell 
+        then /py/bin/pip install -r /tmp/requirements.dev.txt ;\
+    fi && \
     rm -rf /tmp && \
     adduser \
         --disabled-password \
