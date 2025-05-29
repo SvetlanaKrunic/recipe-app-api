@@ -38,7 +38,7 @@ RUN python -m venv /py && \
     if [ "$DEV" = "true" ]; then \
     /py/bin/pip install -r /tmp/requirements.dev.txt ;\
     fi
-    rm -rf /tmp && \
+    RUN rm -rf /tmp && \
     adduser \
         --disabled-password \
         --no-create-home \
