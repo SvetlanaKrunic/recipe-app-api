@@ -33,12 +33,24 @@ ARG DEV=false
 #        django-user                                -dont create home for user, we give user name or in this case django-user
 RUN python -m venv /py && \
     /py/bin/pip install --upgrade pip && \ 
+    #postsql client package that we will need installed inside our alpine image
+    #in order for our spycopg2 package to connect to postgres
+    apk add --update --no-cache postgresql-client && \
+    #sets a virtual dependency package, groups package that we have installed
+    #in the name called tmp-build-deps
+    #we use it to remove our packages later inside our docker file!
+    apk add --update --no-cache --virtual .tmp-build-deps \
+        #listed the packages we need in order to install postgres addapter
+        build-base postgresql-dev musl-dev && \
     /py/bin/pip install -r /tmp/requirements.txt && \
     #shell command conditionally
-    if [ "$DEV" = "true" ]; then \
-    /py/bin/pip install -r /tmp/requirements.dev.txt ;\
-    fi
-    RUN rm -rf /tmp && \
+    if [ $DEV = "true" ]; \
+    then /py/bin/pip install -r /tmp/requirements.dev.txt ;\
+    fi && \
+    rm -rf /tmp && \
+    #remove these packages that we dont need without naming them 
+    #one by one and docker stays ligth weight
+    apk del .tmp-build-deps && \
     adduser \
         --disabled-password \
         --no-create-home \
