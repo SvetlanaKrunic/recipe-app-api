@@ -3,7 +3,7 @@ from app import calc
 
 class CalcTests(SimpleTestCase):
     "Test the calc module."
-    #method       #method so you need self
+    # method           -this is a method so you need arg self
     def test_add_numbers(self):
         "adding nums together"
         res = calc.add(5, 6)
