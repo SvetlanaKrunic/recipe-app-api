@@ -1,11 +1,10 @@
-# calculater func
-
+# calculator functions
 
 def add(x, y):
-    "a+b"
+    """Add two numbers."""
     return x + y
 
 
 def sub(x, y):
-    "a-b"
+    """Subtract y from x."""
     return x - y
